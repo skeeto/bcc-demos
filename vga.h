@@ -6,6 +6,12 @@
 #define VGA_TWIDTH  80
 #define VGA_THEIGHT 25
 
+enum VGA_COLOR {
+    BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, BROWN, LIGHT_GRAY, DARK_GRAY,
+    LIGHT_BLUE, LIGHT_GREEN, LIGHT_CYAN, LIGHT_RED, LIGHT_MAGENTA,
+    YELLOW, WHITE
+};
+
 static int vga_graphics()
 {
 #asm
@@ -61,6 +67,20 @@ static void vga_putc(int x, int y, int c, int color)
   mov   bx,cx
   mov   [bx],dx
   pop   ds
+#endasm
+}
+
+static void vga_cursor(int x, int y)
+{
+#asm
+  mov	bx,sp
+  mov	ax,[bx+4]
+  mov	dh,al
+  mov	ax,[bx+2]
+  mov	dl,al
+  mov	ah,#$02
+  mov	bx,#7
+  int	$10
 #endasm
 }
 
