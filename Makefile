@@ -4,7 +4,7 @@ DOS      ?= dosbox
 DOSFLAGS ?= -exit
 
 test.com : test.c vga.h
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDLIBS)
 
 .PHONY : clean run
 
