@@ -43,7 +43,7 @@ static int vga_text()
 #endasm
 }
 
-static void vga_putc(int x, int y, int c)
+static void vga_putc(int x, int y, int c, int color)
 {
 #asm
   mov   bx,sp
@@ -52,7 +52,8 @@ static void vga_putc(int x, int y, int c)
   mov   cx,[bx+2]  ! x
   add   cx,ax      ! y*80+x
   imul  cx,#2
-  mov   dx,[bx+6]  ! c
+  mov   dl,[bx+6]  ! c
+  mov   dh,[bx+8]  ! color
 
   push  ds
   mov   bx,#$B800  ! VGA text segment
