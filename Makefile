@@ -1,9 +1,9 @@
 CC        = bcc
-CFLAGS   ?=  -ansi -W -O -Md
+CFLAGS   ?= -ansi -W -O -Md
 DOS      ?= dosbox
 DOSFLAGS ?= -exit
 
-test.com : test.c
+test.com : test.c vga.h
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 .PHONY : clean run
