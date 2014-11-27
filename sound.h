@@ -4,7 +4,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-static void tone(int freq)
+static void __tone(unsigned period)
 {
 #asm
   push  bp
@@ -21,6 +21,12 @@ static void tone(int freq)
   pop   bp
 #endasm
 }
+
+static void tone(int freq)
+{
+    __tone(1193180L / freq);
+}
+
 
 static void quiet(void)
 {
