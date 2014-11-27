@@ -24,19 +24,18 @@ static int vga_graphics()
 static void vga_set(int x, int y, int color)
 {
 #asm
-  mov   bx,sp
-  mov   ax,[bx+4]  ! y
-  imul  ax,#320
-  mov   cx,[bx+2]  ! x
-  add   cx,ax      ! y*320+x
-  mov   dx,[bx+6]  ! color
-
+  push  bp
+  mov   bp,sp
   push  ds
-  mov   bx,#$A000  ! VGA segment
-  mov   ds,bx
-  mov   bx,cx
-  mov   [bx],dl
+  mov   bx,[bp+6]  ! y
+  imul  bx,#320
+  add   bx,[bp+4]  ! bx = y * 320 + x
+  mov   ax,#$A000  ! VGA segment
+  mov   ds,ax
+  mov   ax,[bp+8]  ! color
+  mov   [bx],al
   pop   ds
+  pop   bp
 #endasm
 }
 
@@ -52,35 +51,34 @@ static int vga_text()
 static void vga_putc(int x, int y, int c, int color)
 {
 #asm
-  mov   bx,sp
-  mov   ax,[bx+4]  ! y
-  imul  ax,#80
-  mov   cx,[bx+2]  ! x
-  add   cx,ax      ! y*80+x
-  imul  cx,#2
-  mov   dl,[bx+6]  ! c
-  mov   dh,[bx+8]  ! color
-
+  push  bp
+  mov   bp,sp
   push  ds
-  mov   bx,#$B800  ! VGA text segment
-  mov   ds,bx
-  mov   bx,cx
+  mov   bx,[bp+6]  ! y
+  imul  bx,#80
+  add   bx,[bp+4]  ! bx = y * 80 + x
+  imul  bx,#2
+  mov   dl,[bp+8]  ! c
+  mov   dh,[bp+10] ! color
+  mov   ax,#$B800  ! VGA text segment
+  mov   ds,ax
   mov   [bx],dx
   pop   ds
+  pop   bp
 #endasm
 }
 
 static void vga_cursor(int x, int y)
 {
 #asm
-  mov	bx,sp
-  mov	ax,[bx+4]
-  mov	dh,al
-  mov	ax,[bx+2]
-  mov	dl,al
-  mov	ah,#$02
+  push  bp
+  mov	bp,sp
+  mov	dh,[bp+6]
+  mov	dl,[bp+4]
+  mov	ax,#$0200
   mov	bx,#7
   int	$10
+  pop   bp
 #endasm
 }
 
