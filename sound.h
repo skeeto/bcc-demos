@@ -1,5 +1,6 @@
 /**
  * https://courses.engr.illinois.edu/ece390/books/labmanual/io-devices-speaker.html
+ * http://www.fysnet.net/snd.htm
  */
 #ifndef SOUND_H
 #define SOUND_H

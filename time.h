@@ -23,6 +23,7 @@ static long time()
 #endasm
 }
 
+/* Beware midnight cross-over bug. */
 static void wait(int ms)
 {
     long end = time() + ms / 51; // 18.2 Hz
