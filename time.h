@@ -1,13 +1,32 @@
 #ifndef TIME_H
 #define TIME_H
 
-static int time()
+static long time()
 {
 #asm
-  mov   ah,#$00
-  int   $1A
-  mov   ax,dx
+  push  ds
+  pushf
+  pop   ax
+  push  ax
+  xor   ax,#$0100  ! unset IF
+  push  ax
+  popf
+  !! begin critical section
+    mov   ax,#$0000
+    mov   ds,ax
+    mov   bx,#$046C
+    mov   ax,[bx+0]
+    mov   dx,[bx+2]
+  !! end critical section
+  popf
+  pop   ds
 #endasm
+}
+
+static void wait(int ms)
+{
+    long end = time() + ms / 51; // 18.2 Hz
+    while (time() < end);
 }
 
 #endif
