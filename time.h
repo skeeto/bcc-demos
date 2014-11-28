@@ -6,11 +6,7 @@ static long time()
 #asm
   push  ds
   pushf
-  pop   ax
-  push  ax
-  xor   ax,#$0100  ! unset IF
-  push  ax
-  popf
+  cli
   !! begin critical section
     mov   ax,#$0000
     mov   ds,ax
