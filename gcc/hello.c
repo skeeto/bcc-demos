@@ -1,7 +1,7 @@
-/*
- * http://dc0d32.blogspot.com/2010/06/real-mode-in-c-with-gcc-writing.html
- */
-__asm__(".code16gcc\n");
+__asm__(".code16gcc\n"
+        "call  main\n"
+        "mov   $0x4C,%ah\n"
+        "int   $0x21\n");
 
 static void print(char *string)
 {
@@ -12,20 +12,22 @@ static void print(char *string)
         : "%ah");
 }
 
-static void printc(char c)
+static void printl(unsigned long n)
 {
-    asm("mov   $0x02, %%ah\n"
-        "int   $0x21\n"
-        : /* no output */
-        : "dx"(c)
-        : "%ah");
+    /* volatile */ char buffer[12];
+    int i = sizeof(buffer);
+    buffer[--i] = '$';
+    if (n == 0)
+        buffer[--i] = '0';
+    else
+        for (; n > 0; n /= 10)
+            buffer[--i] = '0' + (n % 10);
+    print(buffer + i);
 }
 
 int main(void)
 {
-    printc('H');
-    printc('i');
-    printc('\n');
     print("Hello, world!\n$");
+    printl(123456789);
     return 1;
 }
