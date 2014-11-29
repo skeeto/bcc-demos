@@ -8,8 +8,6 @@ typedef unsigned char uint8_t;
 #define VGA_PWIDTH  320
 #define VGA_PHEIGHT 200
 
-volatile uint8_t *VGA;
-
 struct point {
     short x, y;
 };
@@ -18,38 +16,42 @@ struct rect {
     struct point tl, br;
 };
 
-/* Switch to VGA mode 13 and set up VGA pointer. */
+/* Switch to VGA mode 13 and set ES. */
 static void vga_on()
 {
     asm("mov   $0x0013, %%ax\n"
         "int   $0x10\n"
-        "mov   %%ds, %%eax\n"
-        "shl   $4, %%eax\n"
-        "neg   %%eax\n"
-        "add   $0xA0000, %%eax\n"
-        "mov   %%eax, (%%ebx)\n"
+        "mov   $0xA000, %%ax\n"
+        "mov   %%ax, %%es\n"
         : /* no outputs */
-        : "b"(&VGA)
-        : "%eax");
+        : /* no inputs */
+        : "%ax");
 }
 
 static void vga_off()
 {
     asm("mov   $0x0003, %%ax\n"
         "int   $0x10\n"
+        "mov   $0xA000, %%dx\n"
+        "mov   %%dx, %%es\n"
         : /* no outputs */
         : /* no inputs */
-        : "%ax");
+        : "%ax", "%dx");
 }
 
-static inline void vga_pixel(struct point p, int color)
+static inline void vga_pixel(volatile struct point p, uint8_t color)
 {
-    VGA[p.x + p.y * VGA_PWIDTH] = color;
+    asm("imul  $320, %%bx\n"
+        "add   %%ax, %%bx\n"
+        "mov   %%cl, %%es:(%%bx)\n"
+        : /* no outputs */
+        : "ax"(p.x), "bx"(p.y), "cl"(color)
+        : "%dx");
 }
 
 static void vga_clear(char color)
 {
-    struct point p;
+    volatile struct point p;
     for (p.y = 0; p.y < VGA_PHEIGHT; p.y++)
         for (p.x = 0; p.x < VGA_PWIDTH; p.x++)
             vga_pixel(p, color);
