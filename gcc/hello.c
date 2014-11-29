@@ -1,3 +1,6 @@
+/*
+ * http://dc0d32.blogspot.com/2010/06/real-mode-in-c-with-gcc-writing.html
+ */
 __asm__(".code16gcc\n");
 
 static void print(char *string)
