@@ -100,8 +100,7 @@ int main(void)
     vga_line((struct point){1, 198}, (struct point){318, 1}, 7);
     vga_line((struct point){317, 1}, (struct point){0, 198}, 8);
     vga_rect((struct rect){{120, 60}, {200, 140}}, 14);
-    long delay = 40000000;
-    for (volatile int i = 0; i < delay; i++);
+    msleep(1000);
     vga_off();
     return 1;
 }
