@@ -46,8 +46,8 @@ static void vga_pixel(volatile struct point p, uint8_t color)
 
 static void vga_clear(char color)
 {
-    asm(
-        "mov   %%al, %%ah\n"
+    asm("mov   %%al, %%ah\n"
+        "mov   $0, %%di\n"
         "push  %%ax\n"
         "shl   $16, %%eax\n"
         "pop   %%ax\n"
