@@ -56,7 +56,7 @@ static void vga_clear(char color)
         "stosl\n"
         : /* no outputs */
         : "al"(color)
-        : "%cx");
+        : "%cx", "%di");
 }
 
 static void vga_line(struct point a, struct point b, uint8_t color)
