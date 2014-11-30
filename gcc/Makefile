@@ -1,6 +1,8 @@
 CC      = gcc
 OBJCOPY = objcopy
-CFLAGS  = -std=gnu99 -Wall -Os -Wl,-n,-static,--build-id=none,-Thello.ld -ffreestanding -nostdlib -m32
+CFLAGS  = -std=gnu99 -Wall -Os -nostdlib -m32 \
+  -ffreestanding -fomit-frame-pointer -fwrapv -fno-strict-aliasing \
+  -Wl,-n,-static,--build-id=none,-Thello.ld
 
 all : hello.com
 
