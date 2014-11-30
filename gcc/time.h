@@ -13,15 +13,12 @@ static uint32_t get_tick()
     return result;
 }
 
-static void msleep(int ms)
+static void msleep(uint32_t ms)
 {
-    uint32_t count = ms / 54; // 18.2 Hz
-    uint32_t last = get_tick();
-    while (count) {
-        uint32_t now = get_tick();
-        if (now != last) {
-            last = now;
-            count--;
-        }
-    }
+    uint32_t us = ms * 1000;
+    asm("mov   $0x86, %%ah\n"
+        "int   $0x15\n"
+        : /* no outputs */
+        : "cx"(us >> 16), "dx"(us & 0x16)
+        : "%ah", "%flags");
 }
