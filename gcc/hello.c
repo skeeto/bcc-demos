@@ -3,7 +3,8 @@ __asm__(".code16gcc\n"
         "mov   $0x4C,%ah\n"
         "int   $0x21\n");
 
-typedef unsigned char uint8_t;
+#include "int.h"
+#include "time.h"
 
 #define VGA_PWIDTH  320
 #define VGA_PHEIGHT 200
