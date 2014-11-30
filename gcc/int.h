@@ -7,3 +7,7 @@ typedef long int               int32_t;
 typedef unsigned long long int uint64_t;
 typedef long long int          int64_t;
 typedef unsigned short         size_t;
+
+#define true  1
+#define false 0
+typedef unsigned char          bool;
