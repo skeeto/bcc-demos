@@ -87,3 +87,19 @@ static void vga_rect(struct rect r, uint8_t color)
     vga_line(r.br, (struct point){r.br.x, r.tl.y}, color);
     vga_line(r.br, (struct point){r.tl.x, r.br.y}, color);
 }
+
+static void vga_vsync()
+{
+    asm("mov   $0x03DA, %%dx\n"
+        "current:"
+        "in    %%dx, %%al\n"
+        "and   $0x8, %%al\n"
+        "jnz   current\n"
+        "restart:"
+        "in    %%dx, %%al\n"
+        "and   $0x8, %%al\n"
+        "jz    restart\n"
+        : /* no outputs */
+        : /* no inputs */
+        : "%al", "%dx");
+}
