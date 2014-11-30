@@ -4,7 +4,7 @@ CFLAGS  = -std=gnu99 -Wall -Os -Wl,-n,-static,--build-id=none,-Thello.ld -ffrees
 
 all : hello.com
 
-hello.com : hello.c
+hello.com : hello.c vga.h time.h int.h math.h
 
 .PHONY : all clean test
 
