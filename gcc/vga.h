@@ -14,49 +14,49 @@ struct rect {
 /* Switch to VGA mode 13 and set ES. */
 static void vga_on()
 {
-    asm("mov   $0x0013, %%ax\n"
-        "int   $0x10\n"
-        "mov   $0xA000, %%ax\n"
-        "mov   %%ax, %%es\n"
-        : /* no outputs */
-        : /* no inputs */
-        : "%ax");
+    asm volatile ("mov   $0x0013, %%ax\n"
+                  "int   $0x10\n"
+                  "mov   $0xA000, %%ax\n"
+                  "mov   %%ax, %%es\n"
+                  : /* no outputs */
+                  : /* no inputs */
+                  : "ax");
 }
 
 static void vga_off()
 {
-    asm("mov   $0x0003, %%ax\n"
-        "int   $0x10\n"
-        "mov   $0xA000, %%dx\n"
-        "mov   %%dx, %%es\n"
-        : /* no outputs */
-        : /* no inputs */
-        : "%ax", "%dx");
+    asm volatile ("mov   $0x0003, %%ax\n"
+                  "int   $0x10\n"
+                  "mov   $0xA000, %%dx\n"
+                  "mov   %%dx, %%es\n"
+                  : /* no outputs */
+                  : /* no inputs */
+                  : "ax", "dx");
 }
 
 static void vga_pixel(volatile struct point p, uint8_t color)
 {
-    asm("imul  $320, %%bx\n"
-        "add   %%ax, %%bx\n"
-        "mov   %%cl, %%es:(%%bx)\n"
-        : /* no outputs */
-        : "ax"(p.x), "bx"(p.y), "cl"(color)
-        : "%dx");
+    asm volatile ("imul  $320, %%bx\n"
+                  "add   %%ax, %%bx\n"
+                  "mov   %%cl, %%es:(%%bx)\n"
+                  : /* no outputs */
+                  : "a"(p.x), "b"(p.y), "c"(color)
+                  : "dx");
 }
 
 static void vga_clear(char color)
 {
-    asm("mov   %%al, %%ah\n"
-        "mov   $0, %%di\n"
-        "push  %%ax\n"
-        "shl   $16, %%eax\n"
-        "pop   %%ax\n"
-        "mov   $16000, %%cx\n"
-        "rep\n"
-        "stosl\n"
-        : /* no outputs */
-        : "al"(color)
-        : "%cx", "%di");
+    asm volatile ("mov   %%al, %%ah\n"
+                  "mov   $0, %%di\n"
+                  "push  %%ax\n"
+                  "shl   $16, %%eax\n"
+                  "pop   %%ax\n"
+                  "mov   $16000, %%cx\n"
+                  "rep\n"
+                  "stosl\n"
+                  : /* no outputs */
+                  : "a"(color)
+                  : "cx", "di");
 }
 
 static void vga_line(struct point a, struct point b, uint8_t color)
@@ -90,16 +90,16 @@ static void vga_rect(struct rect r, uint8_t color)
 
 static void vga_vsync()
 {
-    asm("mov   $0x03DA, %%dx\n"
-        "current:"
-        "in    %%dx, %%al\n"
-        "and   $0x8, %%al\n"
-        "jnz   current\n"
-        "restart:"
-        "in    %%dx, %%al\n"
-        "and   $0x8, %%al\n"
-        "jz    restart\n"
-        : /* no outputs */
-        : /* no inputs */
-        : "%al", "%dx");
+    asm volatile ("mov   $0x03DA, %%dx\n"
+                  "current:"
+                  "in    %%dx, %%al\n"
+                  "and   $0x8, %%al\n"
+                  "jnz   current\n"
+                  "restart:"
+                  "in    %%dx, %%al\n"
+                  "and   $0x8, %%al\n"
+                  "jz    restart\n"
+                  : /* no outputs */
+                  : /* no inputs */
+                  : "al", "dx");
 }
