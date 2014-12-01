@@ -1,10 +1,10 @@
 static void print(char *string)
 {
-    asm("mov   $0x09, %%ah\n"
-        "int   $0x21\n"
-        : /* no output */
-        : "dx"(string)
-        : "%ah");
+    asm volatile ("mov   $0x09, %%ah\n"
+                  "int   $0x21\n"
+                  : /* no output */
+                  : "d"(string)
+                  : "ah");
 }
 
 static void printl(unsigned long n)

@@ -1,7 +1,7 @@
-__asm__(".code16gcc\n"
-        "call  main\n"
-        "mov   $0x4C,%ah\n"
-        "int   $0x21\n");
+asm (".code16gcc\n"
+     "call  main\n"
+     "mov   $0x4C,%ah\n"
+     "int   $0x21\n");
 
 #include "int.h"
 #include "time.h"
