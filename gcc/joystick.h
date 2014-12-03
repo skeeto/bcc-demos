@@ -52,6 +52,7 @@ static void joystick_read(struct joystick *joystick)
 }
 
 #include "vga.h"
+#include "vga_font.h"
 
 static void joystick_crosshair(struct point c, uint8_t color)
 {
@@ -77,6 +78,11 @@ static void joystick_calibrate()
         cursor.x = ((joy.x - xmin) * VGA_PWIDTH) / xmax;
         cursor.y = ((joy.y - ymin) * VGA_PHEIGHT) / ymax;
         joystick_crosshair(cursor, WHITE);
+        vga_print((struct point){55, 80}, YELLOW,
+                  "MOVE JOYSTICK AROUND ITS FULL RANGE");
+        vga_print((struct point){43, 113}, YELLOW,
+                  "THEN CENTER JOYSTICK AND PRESS BUTTON A");
+        vga_pixel((struct point){VGA_PWIDTH / 2, VGA_PHEIGHT / 2}, BLACK);
     } while (!joy.a);
     joystick_config[0].xcenter = joy.x;
     joystick_config[0].ycenter = joy.y;
