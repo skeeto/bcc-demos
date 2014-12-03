@@ -1,7 +1,16 @@
+#ifndef VGA_H
+#define VGA_H
+
 #include "math.h"
 
 #define VGA_PWIDTH  320
 #define VGA_PHEIGHT 200
+
+enum VGA_COLOR {
+    BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, BROWN, LIGHT_GRAY, DARK_GRAY,
+    LIGHT_BLUE, LIGHT_GREEN, LIGHT_CYAN, LIGHT_RED, LIGHT_MAGENTA,
+    YELLOW, WHITE
+};
 
 struct point {
     short x, y;
@@ -104,3 +113,5 @@ static void vga_vsync()
                   : /* no inputs */
                   : "al", "dx");
 }
+
+#endif

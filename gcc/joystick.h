@@ -5,9 +5,16 @@ struct joystick {
     bool a, b;
 };
 
-static struct {
-    uint16_t min, max;
-} joystick_limits[2] = {{0xffff, 0x0000}, {0xffff, 0x0000}};
+struct joystick_config {
+    uint16_t xmin, xmax;
+    uint16_t ymin, ymax;
+    uint16_t xcenter, ycenter;
+};
+
+static struct joystick_config joystick_config[2] = {
+    {0xffff, 0x0000, 0xffff, 0x0000, 0xffff, 0xffff},
+    {0xffff, 0x0000, 0xffff, 0x0000, 0xffff, 0xffff}
+};
 
 static void joystick_read2(struct joystick *a, struct joystick *b)
 {
@@ -17,14 +24,14 @@ static void joystick_read2(struct joystick *a, struct joystick *b)
                   : "=a"(a->x), "=b"(a->y), "=c"(b->x), "=d"(b->y)
                   : /**/
                   : /**/);
-    joystick_limits[0].min = min(joystick_limits[0].min, a->x);
-    joystick_limits[0].max = max(joystick_limits[0].max, a->x);
-    joystick_limits[0].min = min(joystick_limits[0].min, a->y);
-    joystick_limits[0].max = max(joystick_limits[0].max, a->y);
-    joystick_limits[1].min = min(joystick_limits[1].min, b->x);
-    joystick_limits[1].max = max(joystick_limits[1].max, b->x);
-    joystick_limits[1].min = min(joystick_limits[1].min, b->y);
-    joystick_limits[1].max = max(joystick_limits[1].max, b->y);
+    joystick_config[0].xmin = min(joystick_config[0].xmin, a->x);
+    joystick_config[0].xmax = max(joystick_config[0].xmax, a->x);
+    joystick_config[0].ymin = min(joystick_config[0].ymin, a->y);
+    joystick_config[0].ymax = max(joystick_config[0].ymax, a->y);
+    joystick_config[1].xmin = min(joystick_config[1].xmin, b->x);
+    joystick_config[1].xmax = max(joystick_config[1].xmax, b->x);
+    joystick_config[1].ymin = min(joystick_config[1].ymin, b->y);
+    joystick_config[1].ymax = max(joystick_config[1].ymax, b->y);
     uint16_t buttons = 0;
     asm volatile ("mov  $0x84, %%ah\n"
                   "mov  $0, %%dx\n"
@@ -42,4 +49,38 @@ static void joystick_read(struct joystick *joystick)
 {
     struct joystick dummy;
     joystick_read2(joystick, &dummy);
+}
+
+#include "vga.h"
+
+static void joystick_crosshair(struct point c, uint8_t color)
+{
+    vga_line((struct point){c.x - 2, c.y},
+             (struct point){c.x + 2, c.y}, color);
+    vga_line((struct point){c.x, c.y - 2},
+             (struct point){c.x, c.y + 2}, color);
+}
+
+static void joystick_calibrate()
+{
+    vga_clear(BLUE);
+    struct point cursor = {0, 0};
+    struct joystick joy;
+    do {
+        joystick_read(&joy);
+        int xmin = joystick_config[0].xmin;
+        int xmax = joystick_config[0].xmax;
+        int ymin = joystick_config[0].ymin;
+        int ymax = joystick_config[0].ymax;
+        vga_vsync();
+        joystick_crosshair(cursor, BLUE);
+        cursor.x = ((joy.x - xmin) * VGA_PWIDTH) / xmax;
+        cursor.y = ((joy.y - ymin) * VGA_PHEIGHT) / ymax;
+        joystick_crosshair(cursor, WHITE);
+    } while (!joy.a);
+    joystick_config[0].xcenter = joy.x;
+    joystick_config[0].ycenter = joy.y;
+    do
+        joystick_read(&joy);
+    while (joy.a);
 }
