@@ -36,12 +36,13 @@ static void vga_off()
 
 static void vga_pixel(volatile struct point p, uint8_t color)
 {
-    asm volatile ("imul  $320, %%bx\n"
-                  "add   %%ax, %%bx\n"
-                  "mov   %%cl, %%es:(%%bx)\n"
-                  : /* no outputs */
-                  : "a"(p.x), "b"(p.y), "c"(color)
-                  : "dx");
+    if (p.x >= 0 && p.x < VGA_PWIDTH && p.y >= 0 && p.y < VGA_PHEIGHT)
+        asm volatile ("imul  $320, %%bx\n"
+                      "add   %%ax, %%bx\n"
+                      "mov   %%cl, %%es:(%%bx)\n"
+                      : /* no outputs */
+                      : "a"(p.x), "b"(p.y), "c"(color)
+                      : "dx");
 }
 
 static void vga_clear(char color)
