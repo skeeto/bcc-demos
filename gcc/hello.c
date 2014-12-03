@@ -22,7 +22,7 @@ int main(void)
     struct joystick joy;
     joystick_read(&joy);
     if (joy.x != 0 || joy.y != 0) {
-        for (;;) {
+        while (!joy.a) {
             joystick_read(&joy);
             vga_vsync();
             int min = joystick_limits[0].min, max = joystick_limits[0].max;
