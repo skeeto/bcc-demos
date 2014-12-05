@@ -21,11 +21,11 @@ int main(void)
     vga_rect((struct rect){{120, 60}, {200, 140}}, 14);
     msleep(1000);
 
+    tone_on();
     struct joystick joy;
     joystick_read(&joy);
     if (joy.x != 0 || joy.y != 0) {
         joystick_calibrate();
-        tone_on();
         do {
             joystick_read(&joy);
             vga_vsync();
@@ -36,16 +36,17 @@ int main(void)
             vga_clear(32 + ((joy.y - ymin) * 16) / ymax);
             tone(131 + ((joy.x - xmin) * 392) / xmax);
         } while (!joy.a);
-        tone_off();
     } else {
         mouse_init();
         struct mouse mouse;
         do {
             mouse = mouse_read();
             vga_clear(32 + (mouse.y * 16) / (MOUSE_YMAX + 1));
+            tone(131 + (mouse.x * 392) / MOUSE_XMAX);
             vga_vsync();
         } while (!mouse.left);
     }
+    tone_off();
     vga_off();
     return 1;
 }
