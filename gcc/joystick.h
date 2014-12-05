@@ -21,9 +21,7 @@ static void joystick_read2(struct joystick *a, struct joystick *b)
     asm volatile ("mov  $0x84, %%ah\n"
                   "mov  $1, %%dx\n"
                   "int  $0x15\n"
-                  : "=a"(a->x), "=b"(a->y), "=c"(b->x), "=d"(b->y)
-                  : /**/
-                  : /**/);
+                  : "=a"(a->x), "=b"(a->y), "=c"(b->x), "=d"(b->y));
     joystick_config[0].xmin = min(joystick_config[0].xmin, a->x);
     joystick_config[0].xmax = max(joystick_config[0].xmax, a->x);
     joystick_config[0].ymin = min(joystick_config[0].ymin, a->y);
