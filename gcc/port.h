@@ -6,9 +6,9 @@
 static inline int16_t inportb(int16_t port)
 {
     volatile uint8_t value;
-    asm volatile ("in   %1, %0\n"
-                  : "=r"(value)
-                  : "rm"(port)
+    asm volatile ("in   %%dx, %%ax\n"
+                  : "=a"(value)
+                  : "d"(port)
                   : /* no clobber */);
     return value;
 }
