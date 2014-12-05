@@ -1,4 +1,4 @@
-ENTRY(main);
+ENTRY(_main);
 SECTIONS
 {
     . = 0x0100;

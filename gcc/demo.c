@@ -1,5 +1,5 @@
 asm (".code16gcc\n"
-     "call  main\n"
+     "call  _main\n"
      "mov   $0x4C,%ah\n"
      "int   $0x21\n");
 
@@ -10,7 +10,7 @@ asm (".code16gcc\n"
 #include "tone.h"
 #include "mouse.h"
 
-int main(void)
+int _main(void)
 {
     vga_on();
     vga_clear(4);
