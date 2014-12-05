@@ -7,6 +7,7 @@ asm (".code16gcc\n"
 #include "time.h"
 #include "vga.h"
 #include "joystick.h"
+#include "tone.h"
 
 int main(void)
 {
@@ -23,12 +24,18 @@ int main(void)
     joystick_read(&joy);
     if (joy.x != 0 || joy.y != 0) {
         joystick_calibrate();
+        tone_on();
         while (!joy.a) {
             joystick_read(&joy);
             vga_vsync();
-            int min = joystick_config[0].ymin, max = joystick_config[0].ymax;
-            vga_clear(32 + ((joy.y - min) * 16) / max);
+            int xmin = joystick_config[0].xmin;
+            int xmax = joystick_config[0].xmax;
+            int ymin = joystick_config[0].ymin;
+            int ymax = joystick_config[0].ymax;
+            vga_clear(32 + ((joy.y - ymin) * 16) / ymax);
+            tone(131 + ((joy.x - xmin) * 392) / xmax);
         }
+        tone_off();
     } else {
         for (int i = 0; i < 256; i++) {
             vga_clear(i);
