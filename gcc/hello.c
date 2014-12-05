@@ -8,6 +8,7 @@ asm (".code16gcc\n"
 #include "vga.h"
 #include "joystick.h"
 #include "tone.h"
+#include "mouse.h"
 
 int main(void)
 {
@@ -25,7 +26,7 @@ int main(void)
     if (joy.x != 0 || joy.y != 0) {
         joystick_calibrate();
         tone_on();
-        while (!joy.a) {
+        do {
             joystick_read(&joy);
             vga_vsync();
             int xmin = joystick_config[0].xmin;
@@ -34,14 +35,16 @@ int main(void)
             int ymax = joystick_config[0].ymax;
             vga_clear(32 + ((joy.y - ymin) * 16) / ymax);
             tone(131 + ((joy.x - xmin) * 392) / xmax);
-        }
+        } while (!joy.a);
         tone_off();
     } else {
-        for (int i = 0; i < 256; i++) {
-            vga_clear(i);
+        mouse_init();
+        struct mouse mouse;
+        do {
+            mouse = mouse_read();
+            vga_clear(32 + (mouse.y * 16) / (MOUSE_YMAX + 1));
             vga_vsync();
-            msleep(100);
-        }
+        } while (!mouse.left);
     }
     vga_off();
     return 1;

@@ -6,7 +6,8 @@ CFLAGS  = -std=gnu99 -Wall -Os -nostdlib -m32 -Wno-unused-function \
 
 all : hello.com
 
-hello.com : hello.c vga.h time.h int.h math.h joystick.h vga_font.h
+hello.com : hello.c \
+    vga.h time.h int.h math.h joystick.h vga_font.h port.h tone.h mouse.h
 
 .PHONY : all clean test
 

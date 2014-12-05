@@ -1,5 +1,8 @@
 #include "int.h"
 
+#define MOUSE_XMAX 639
+#define MOUSE_YMAX 199
+
 struct mouse {
     uint16_t x, y;
     bool left, right, middle;
