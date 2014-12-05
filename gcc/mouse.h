@@ -1,3 +1,4 @@
+/* http://dosgraphicseditor.blogspot.com/p/mouse-events-tutorial.html */
 #include "int.h"
 
 #define MOUSE_XMAX 639
