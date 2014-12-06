@@ -1,8 +1,4 @@
-asm (".code16gcc\n"
-     "call  _main\n"
-     "mov   $0x4C,%ah\n"
-     "int   $0x21\n");
-
+#include "init.h"
 #include "int.h"
 #include "time.h"
 #include "vga.h"
